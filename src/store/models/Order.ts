@@ -1,4 +1,4 @@
-import { observable, action } from "mobx";
+import { observable, action, runInAction } from "mobx";
 import UUID from "uuid-js";
 
 export default class Order {
@@ -20,18 +20,20 @@ export default class Order {
         return this._name;
     }
 
-    @action
     set name(name: string) {
-        this._name = name;
+        runInAction(() => {
+            this._name = name;
+        })
     }
 
     get total(): number {
         return this._total;
     }
 
-    @action
     set total(total: number) {
-        this._total = total;
+        runInAction(() => {
+            this._total = total;
+        })
     }
 }
 

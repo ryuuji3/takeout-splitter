@@ -1,0 +1,8 @@
+table.OrderTable {
+    background-color: transparent;
+    border: none;
+}
+
+table.OrderTable > thead > tr > th {
+    border: none;
+}

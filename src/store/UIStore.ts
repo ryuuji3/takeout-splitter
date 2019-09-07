@@ -1,4 +1,4 @@
-import RootStore from ".";
+import { RootStore } from ".";
 
 export default class UIStore {
     protected rootStore: RootStore;

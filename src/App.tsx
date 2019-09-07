@@ -1,10 +1,15 @@
 import React from 'react';
 import './App.css';
+import store, { StoreContext as Store } from "./store";
+import FoodSplitter from './components/FoodSplitter';
 
 function App() {
   return (
-    <div className="App">
-    </div>
+    <Store.Provider value={store}>
+      <div className="App">
+        <FoodSplitter />
+      </div>
+    </Store.Provider>
   );
 }
 

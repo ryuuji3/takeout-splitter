@@ -8,7 +8,7 @@ export default class UIStore {
         this._editing = rootStore.orderStore.orders[0].id;
     }
 
-    @action
+    @action.bound
     edit(id: string) {
         const found = this.rootStore.orderStore.find(id);
 
@@ -17,17 +17,12 @@ export default class UIStore {
         }
     }
 
-    @action
+    @action.bound
     clear() {
         this._editing = null;
     }
 
-    @computed
     get editing() {
-        if (this._editing) {
-            return this.rootStore.orderStore.find(this._editing);
-        }
-        
-        return null;
+        return this._editing;
     }
 }

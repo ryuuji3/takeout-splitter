@@ -7,7 +7,8 @@ import Button from "react-bootstrap/Button";
 import "./FoodSplitter.css";
 
 function FoodSplitter() {
-    const { orderStore } = useContext(StoreContext);
+    const { orderStore, uiStore } = useContext(StoreContext);
+    const { editing, edit, clear } = uiStore;
     const { orders, subtotal: sumTotal, add, remove, tax, delivery, tip, calculateDelivery, calculateTip, calculateTotal, deliveryTotal, total, taxTotal, tipTotal } = orderStore;
 
     return <div>
@@ -34,26 +35,26 @@ function FoodSplitter() {
                 </tr>
             </thead>
             <tbody>
-                {orders.map(({ id, name, total: subtotal, calculateTax }) => <tr key={id}>
+                {orders.map(order => <tr key={order.id}>
                     <td>
-                        <Button variant="danger" onClick={() => remove(id)}>
+                        <Button variant="danger" onClick={() => remove(order.id)}>
                             <i className="fas fa-trash-alt" />
                         </Button>
                     </td>
                     <td>
-                        <Button variant="link">
-                            {name}
+                        <Button variant="link" onClick={() => edit(order.id)}>
+                            {order.name}
                         </Button>
                     </td>
                     <td>
                         <Button variant="link">
-                            {currency(subtotal)}
+                            {currency(order.total)}
                         </Button>
                     </td>
-                    <td>{currency(calculateDelivery(id))}</td>
-                    <td>{currency(calculateTax(tax))}</td>
-                    <td>{currency(calculateTip(id))}</td>
-                    <td>{currency(calculateTotal(id))}</td>
+                    <td>{currency(calculateDelivery(order.id))}</td>
+                    <td>{currency(order.calculateTax(tax))}</td>
+                    <td>{currency(calculateTip(order.id))}</td>
+                    <td>{currency(calculateTotal(order.id))}</td>
                 </tr>)}
                 <tr>
                     <td colSpan={2}></td>

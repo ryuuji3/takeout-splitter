@@ -14,12 +14,12 @@ export default class OrderStore {
         this.add({ name: "Susie", total: 9.99});
     }
 
-    @action
+    @action.bound
     add(order: IOrder) {
         this._orders.push(new Order(order));
     }
 
-    @action
+    @action.bound
     remove(id: string) {
         const found = this._orders.findIndex(order => order.id === id);
 

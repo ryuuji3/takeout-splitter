@@ -5,18 +5,22 @@ import "./OrderTable.css";
 
 interface TableProps {
     orders: Array<Order>
+    remove: (id: string) => void
 }
 
-export default function OrderTable({ orders }: TableProps) {
+export default function OrderTable({ orders, remove }: TableProps) {
     return <Table className="OrderTable">
         <thead>
             <tr>
-                <th>Name</th>
+                <th colSpan={2}>Name</th>
                 <th>Total</th>
             </tr>
         </thead>
         <tbody>
             { orders.map(({ id, name, total }) => <tr key={id}>
+                <td>
+                    <a href="#" onClick={() => remove(id)}>Remove</a>
+                </td>
                 <td>{name}</td>
                 <td>{total}</td>
             </tr>)}

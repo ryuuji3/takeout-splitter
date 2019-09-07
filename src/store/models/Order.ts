@@ -35,6 +35,8 @@ export default class Order {
             this._total = total;
         })
     }
+
+    calculateTax = (percentage: number) => (percentage / 100) * this.total;
 }
 
 export interface IOrder {

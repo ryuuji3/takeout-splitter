@@ -1,8 +1,13 @@
 table.OrderTable {
     background-color: transparent;
     border: none;
+    color: white;
 }
 
+table.OrderTable button {
+    font-size: large;
+}
 table.OrderTable > thead > tr > th {
+    vertical-align: middle;
     border: none;
 }

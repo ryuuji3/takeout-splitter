@@ -6,10 +6,10 @@ export default class Order {
     @observable protected _name!: string;
     @observable protected _total!: number;
 
-    constructor(order: IOrder) {
+    constructor({name, total }: IOrder = { name: '', total: 0.0 }) {
         this._id = UUID.create(4).toString();
-        this.name = order.name;
-        this.total = order.total;
+        this.name = name;
+        this.total = total;
     }
 
     get id(): string {

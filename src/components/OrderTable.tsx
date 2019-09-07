@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from "react";
-import Order from "../store/models/Order";
+import Order, { IOrder } from "../store/models/Order";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import "./OrderTable.css";
@@ -7,14 +7,15 @@ import { currency } from "../utils";
 
 interface TableProps {
     orders: Array<Order>;
+    add: (order?: IOrder) => Order;
     remove: (id: string) => void;
     tax: number;
     delivery: number;
     tip: number;
-    deliveryPerOrder: number;
     changeTax: (tax: number) => void;
     changeTip: (tip: number) => void;
     changeDelivery: (delivery: number) => void;
+    calculateDelivery: (id: string) => number;
     calculateTotal: (id: string) => number;
     calculateTip: (id: string) => number;
     sumTotal: number;
@@ -24,12 +25,12 @@ interface TableProps {
     total: number;
 }
 
-export default function OrderTable({ orders, remove, tax, delivery, tip, deliveryPerOrder, calculateTip, calculateTotal, sumTotal, deliveryTotal, taxTotal, tipTotal, total }: TableProps) {
+export default function OrderTable({ orders, add, remove, tax, delivery, tip, calculateTip, calculateTotal, calculateDelivery, sumTotal, deliveryTotal, taxTotal, tipTotal, total }: TableProps) {
     return <Table className="OrderTable">
         <thead>
             <tr>
                 <th>
-                    <Button variant="success">
+                    <Button variant="success" onClick={() => add()}>
                         <i className="fas fa-plus" />
                     </Button>
                 </th>
@@ -54,9 +55,17 @@ export default function OrderTable({ orders, remove, tax, delivery, tip, deliver
                         <i className="fas fa-trash-alt" />
                     </Button>
                 </td>
-                <td>{name}</td>
-                <td>{currency(subtotal)}</td>
-                <td>{currency(deliveryPerOrder)}</td>
+                <td>
+                    <Button variant="link">
+                        {name}
+                    </Button>
+                </td>
+                <td>
+                    <Button variant="link">
+                        {currency(subtotal)}
+                    </Button>
+                </td>
+                <td>{currency(calculateDelivery(id))}</td>
                 <td>{currency(calculateTax(tax))}</td>
                 <td>{currency(calculateTip(id))}</td>
                 <td>{currency(calculateTotal(id))}</td>

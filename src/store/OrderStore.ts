@@ -22,8 +22,12 @@ export default class OrderStore {
     }
 
     @action.bound
-    add(order: IOrder) {
-        this._orders.push(new Order(order));
+    add(payload?: IOrder) {
+        const order = new Order(payload);
+
+        this._orders.push(order);
+
+        return order;
     }
 
     @action.bound
@@ -37,11 +41,11 @@ export default class OrderStore {
 
     @computed
     get subtotal(): number {
-        return this._orders.reduce((sum, { total }) => sum + total, 0);
+        return this.calculatableOrders.reduce((sum, { total }) => sum + total, 0);
     }
 
     get deliveryTotal(): number {
-        if (this._orders.length) {
+        if (this.calculatableOrders.length) {
             return this.delivery;
         }
 
@@ -50,23 +54,28 @@ export default class OrderStore {
 
     @computed
     get taxTotal(): number {
-        return this.orders.reduce((total, { total: subtotal }) => total + (subtotal + this.deliveryPerOrder) * this.tax / 100, 0);
+        return this.calculatableOrders.reduce((total, { total: subtotal }) => total + (subtotal + this.deliveryPerOrder) * this.tax / 100, 0);
     }
 
     @computed
     get tipTotal(): number {
-        return this.orders.reduce((total, order) => total + this.calculateTipForOrder(order), 0);
+        return this.calculatableOrders.reduce((total, order) => total + this.calculateTipForOrder(order), 0);
     }
 
     @computed
     get total(): number {
-        return this.orders.reduce((total, order) => total + this.calculateTotalForOrder(order) , 0);
+        return this.calculatableOrders.reduce((total, order) => total + this.calculateTotalForOrder(order) , 0);
+    }
+
+    @computed
+    get calculatableOrders(): Array<Order> {
+        return this._orders.filter(({total}) => total > 0);
     }
 
     @computed
     get deliveryPerOrder(): number {
-        if (this.orders.length) {
-            return this.delivery / this.orders.length;
+        if (this.calculatableOrders.length) {
+            return this.delivery / this.calculatableOrders.length;
         }
         
         return 0;
@@ -82,8 +91,18 @@ export default class OrderStore {
         return (total * this.tip / 100);
     }
 
+    calculateDelivery = (id: string): number => {
+        const found = this.calculatableOrders.find(order => order.id === id);
+
+        if (found) {
+            return this.deliveryPerOrder;
+        }
+
+        return 0.0;
+    }
+
     calculateTotal = (id: string): number => {
-        const found = this.orders.find(order => order.id === id);
+        const found = this.calculatableOrders.find(order => order.id === id);
 
         if (found) {
             return this.calculateTotalForOrder(found);
@@ -93,7 +112,7 @@ export default class OrderStore {
     }
 
     calculateTip = (id: string): number => {
-        const found = this.orders.find(order => order.id === id);
+        const found = this.calculatableOrders.find(order => order.id === id);
 
         if (found) {
             return this.calculateTipForOrder(found);

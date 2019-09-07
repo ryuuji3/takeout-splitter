@@ -3,22 +3,18 @@ import Order, { IOrder } from "./models/Order";
 import { RootStore } from ".";
 
 export default class OrderStore {
-    protected rootStore: RootStore;
     // Observables
     @observable protected _orders: Array<Order> = [];
     @observable protected _tax!: number;
     @observable protected _delivery!: number;
     @observable protected _tip!: number;
 
-    public constructor(rootStore: RootStore) {
-        this.rootStore = rootStore;
-
+    public constructor(protected rootStore: RootStore) {
         this.tax = 13;
         this.delivery = 5;
         this.tip = 15;
 
-        this.add({ name: "Josh", total: 13.99 });
-        this.add({ name: "Susie", total: 9.99});
+        this.add();
     }
 
     @action.bound
@@ -119,6 +115,12 @@ export default class OrderStore {
         }
 
         return 0.0;
+    }
+
+    find = (id: string): Order|null => {
+        const found = this.orders.find(order => order.id === id);
+
+        return found || null;
     }
 
     get orders(): Array<Order> {

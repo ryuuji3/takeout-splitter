@@ -1,32 +1,70 @@
 import React, { useContext } from "react";
 import { StoreContext } from "../store";
-import OrderTable from "./OrderTable";
 import { observer } from "mobx-react-lite";
+import { currency } from "../utils";
+import Table from "react-bootstrap/Table";
+import Button from "react-bootstrap/Button";
+import "./FoodSplitter.css";
 
 function FoodSplitter() {
     const { orderStore } = useContext(StoreContext);
-    const { orders, subtotal, add, remove, tax, delivery, tip, calculateDelivery, calculateTip, calculateTotal, deliveryTotal, total, taxTotal, tipTotal } = orderStore;
+    const { orders, subtotal: sumTotal, add, remove, tax, delivery, tip, calculateDelivery, calculateTip, calculateTotal, deliveryTotal, total, taxTotal, tipTotal } = orderStore;
 
     return <div>
-        <OrderTable 
-            orders={orders} 
-            add={add}
-            remove={remove} 
-            tax={tax} 
-            delivery={delivery} 
-            tip={tip} 
-            calculateDelivery={calculateDelivery}
-            calculateTip={calculateTip}
-            changeTax={tax => { orderStore.tax = tax; }}
-            changeDelivery={delivery => { orderStore.delivery = delivery; }}
-            changeTip={tip => { orderStore.tip = tip; }}
-            calculateTotal={calculateTotal}
-            sumTotal={subtotal}
-            deliveryTotal={deliveryTotal}
-            taxTotal={taxTotal}
-            tipTotal={tipTotal}
-            total={total}
-        />
+        <Table className="OrderTable">
+            <thead>
+                <tr>
+                    <th>
+                        <Button variant="success" onClick={() => add()}>
+                            <i className="fas fa-plus" />
+                        </Button>
+                    </th>
+                    <th>Name</th>
+                    <th>Subtotal</th>
+                    <th>Delivery
+                    <Button variant="link">(${delivery})</Button>
+                    </th>
+                    <th>Tax
+                    <Button variant="link">({tax}%)</Button>
+                    </th>
+                    <th>Tip
+                    <Button variant="link">({tip}%)</Button>
+                    </th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {orders.map(({ id, name, total: subtotal, calculateTax }) => <tr key={id}>
+                    <td>
+                        <Button variant="danger" onClick={() => remove(id)}>
+                            <i className="fas fa-trash-alt" />
+                        </Button>
+                    </td>
+                    <td>
+                        <Button variant="link">
+                            {name}
+                        </Button>
+                    </td>
+                    <td>
+                        <Button variant="link">
+                            {currency(subtotal)}
+                        </Button>
+                    </td>
+                    <td>{currency(calculateDelivery(id))}</td>
+                    <td>{currency(calculateTax(tax))}</td>
+                    <td>{currency(calculateTip(id))}</td>
+                    <td>{currency(calculateTotal(id))}</td>
+                </tr>)}
+                <tr>
+                    <td colSpan={2}></td>
+                    <th>{currency(sumTotal)}</th>
+                    <th>{currency(deliveryTotal)}</th>
+                    <th>{currency(taxTotal)}</th>
+                    <th>{currency(tipTotal)}</th>
+                    <th>{currency(total)}</th>
+                </tr>
+            </tbody>
+        </Table>
     </div>
 }
 

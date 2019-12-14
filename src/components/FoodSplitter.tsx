@@ -4,12 +4,14 @@ import { observer } from "mobx-react-lite";
 import { currency } from "../utils";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
+import NumberInput from "./NumberInput"
+import TextInput from "./TextInput"
 import "./FoodSplitter.css";
 
 function FoodSplitter() {
     const { orderStore, uiStore } = useContext(StoreContext);
     const { editing, edit, clear } = uiStore;
-    const { orders, subtotal: sumTotal, add, remove, tax, delivery, tip, calculateDelivery, calculateTip, calculateTotal, deliveryTotal, total, taxTotal, tipTotal } = orderStore;
+    const { orders, subtotal: sumTotal, add, tax, remove, calculateDelivery, calculateTip, calculateTotal, deliveryTotal, total, taxTotal, tipTotal } = orderStore;
 
     return <div>
         <Table className="OrderTable">
@@ -23,13 +25,13 @@ function FoodSplitter() {
                     <th>Name</th>
                     <th>Subtotal</th>
                     <th>Delivery
-                    <Button variant="link">(${delivery})</Button>
+                        <NumberInput value={orderStore.delivery} onChange={newDelivery => { orderStore.delivery = newDelivery }} />
                     </th>
                     <th>Tax
-                    <Button variant="link">({tax}%)</Button>
+                        <NumberInput value={orderStore.tax} onChange={newTax => { orderStore.tax = newTax }} />
                     </th>
                     <th>Tip
-                    <Button variant="link">({tip}%)</Button>
+                        <NumberInput value={orderStore.tip} onChange={newTip => { orderStore.tip = newTip }} />
                     </th>
                     <th>Total</th>
                 </tr>
@@ -42,14 +44,10 @@ function FoodSplitter() {
                         </Button>
                     </td>
                     <td>
-                        <Button variant="link" onClick={() => edit(order.id)}>
-                            {order.name}
-                        </Button>
+                        <TextInput value={order.name} onChange={name => { order.name = name; }} placeholder="Enter name" />
                     </td>
                     <td>
-                        <Button variant="link">
-                            {currency(order.total)}
-                        </Button>
+                        <NumberInput value={order.total} onChange={total => { order.total = total; }} />
                     </td>
                     <td>{currency(calculateDelivery(order.id))}</td>
                     <td>{currency(order.calculateTax(tax))}</td>

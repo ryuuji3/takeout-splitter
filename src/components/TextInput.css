@@ -1,0 +1,7 @@
+input.text-input {
+    background-color: transparent;
+    color: white;
+    
+    border: 0;
+    border-bottom: 1px solid white;
+}
